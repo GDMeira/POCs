@@ -1,15 +1,15 @@
-import pg, { Pool } from "pg";
+import { ConnectionConfig, Pool } from "pg";
 import dotenv from "dotenv";
+
 dotenv.config();
 
-const db : Pool = new Pool({
-  host: "bubble.db.elephantsql.com",
-  port: 5432,
-  user: "lhotaajq",
-  password: "4lkiwetSiOnJ0iXheG-56yd8H8WRWhOd",
-  database: "lhotaajq",
-  ssl:false
-})
+const configDataBase: ConnectionConfig = {
+  connectionString: process.env.DATABASE_URL
+}
+
+if (process.env.NODE_ENV === "production") configDataBase.ssl = true;
+
+const db = new Pool(configDataBase);
 
 db.connect((error, client, done) => {
   if (error) {
