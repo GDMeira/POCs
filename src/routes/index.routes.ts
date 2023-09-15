@@ -9,5 +9,6 @@ const router = Router();
 router.get('/person', personController.getPerson);
 router.post('/person', schemaValidation(createPersonSchema), personController.postPerson);
 router.patch('/person/:id', godPowersValidation, schemaValidation(updatePersonSchema), personController.updatePerson);
+router.delete('/person/:id', godPowersValidation, personController.deletePerson);
 
 export default router;

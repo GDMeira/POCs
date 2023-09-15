@@ -45,10 +45,23 @@ async function updatePerson(req: Request, res: Response) {
     res.status(httpStatus.OK).send(person);
 }
 
+async function deletePerson(req: Request, res: Response) {
+    const id = Number(req.params.id);
+
+    if (!id || id < 1 || !Number.isInteger(id)) {
+        throw error.badRequest("id inválido!");
+    }
+
+    await PersonServices.deletePerson(id);
+
+    res.sendStatus(httpStatus.NO_CONTENT);
+}
+
 const personController = {
     getPerson,
     postPerson,
     updatePerson,
+    deletePerson,
 
 }
 

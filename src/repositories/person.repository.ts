@@ -2,11 +2,16 @@ import db from "@/database/database.connection";
 import { CreatePerson, Person } from "@/protocols/types";
 import { QueryResult } from "pg";
 
-async function getAmountOfPeople(): Promise<number> {
-    const query = `SELECT COUNT(*) FROM people;`;
-    const result = await db.query(query, []);
+type AmountPeopleAtDB = {
+    count: number;
+    max: number;
+}
 
-    return result.rows[0].count;
+async function getAmountOfPeople(): Promise<AmountPeopleAtDB> {
+    const query = `SELECT MAX(id), COUNT(id) FROM people;`;
+    const result = await db.query<AmountPeopleAtDB>(query, []);
+
+    return result.rows[0];
 }
 
 function createPerson(person: CreatePerson) {
@@ -41,12 +46,24 @@ async function updatePerson(id: number, phone: string): Promise<QueryResult<Pers
     return result;
 }
 
+async function deletePerson(id: number): Promise<QueryResult> {
+    const query = `/* SQL */
+        DELETE FROM people 
+        WHERE id = $1
+        RETURNING id
+    `;
+    const result = await db.query(query, [id]);
+
+    return result;
+}
+
 const PersonRepository = {
     getAmountOfPeople,
     createPerson,
     findPersonById,
     updatePerson,
-    
+    deletePerson,
+
 }
 
 export default PersonRepository;

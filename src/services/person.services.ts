@@ -3,9 +3,16 @@ import { CreatePerson, Person } from "@/protocols/types";
 import PersonRepository from "@/repositories/person.repository";
 
 async function getRandomPerson() {
-   const amountOfPeople = await PersonRepository.getAmountOfPeople();
-   const id = Math.floor(Math.random() * (amountOfPeople - 1 + 1) + 1);
-   const randomPerson = await PersonRepository.findPersonById(id);
+   const { count: amountOfPeople, max: maxId } = await PersonRepository.getAmountOfPeople();
+   if (!amountOfPeople || amountOfPeople === 0) throw error.badRequest("Ainda não temos pessoas cadastradas.")
+
+   let id = Math.floor(Math.random() * (maxId - 1 + 1) + 1);
+   let randomPerson = await PersonRepository.findPersonById(id);
+   while (randomPerson.rowCount === 0 && amountOfPeople > 0) {
+      id = Math.floor(Math.random() * (maxId - 1 + 1) + 1);
+      randomPerson = await PersonRepository.findPersonById(id);
+   }
+
 
    return randomPerson.rows[0] as Person;
 }
@@ -30,12 +37,18 @@ async function updatePerson(id: number, phone: string) {
    return person.rows[0] as Person;
 }
 
+async function deletePerson(id: number) {
+   const result = await PersonRepository.deletePerson(id);
+
+   if (result.rowCount === 0) throw error.notFound('Não foi possível encontrar uma pessoa com esse id.')
+}
+
 const PersonServices = {
    getRandomPerson,
    postPerson,
    getPerson,
    updatePerson,
-   
+   deletePerson,
 
 }
 
