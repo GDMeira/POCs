@@ -32,6 +32,14 @@ const badRequest = (msg = "Requisição inválida.") => {
     };
 }
 
+const acessDenied = (msg = "Acesso negado!.") => {
+    return {
+        type: 'acessDenied', 
+        message: msg,
+        statusCode: httpStatus.UNAUTHORIZED
+    };
+}
+
 const internalError = (msg = "Erro interno do servidor.") => {
     return {
         type: 'internalError', 
@@ -45,6 +53,7 @@ export const error = {
     notFound,
     unprocessableEntity,
     badRequest,
+    acessDenied,
     internalError,
     
 }
