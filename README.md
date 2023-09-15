@@ -1,4 +1,4 @@
-# Pair programing
+# POC TypeScript
 
 ## How to run
 
