@@ -3,7 +3,9 @@ import "express-async-errors";
 import cors from 'cors';
 import router from "@/routes/index.routes";
 import errorMidleware from "./middlewares/errorMidleware";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app : Application = express();
 
 app.use(json());
