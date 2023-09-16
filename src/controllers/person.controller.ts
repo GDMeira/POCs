@@ -5,7 +5,22 @@ import httpStatus from "http-status";
 import { Person } from "@/protocols/types";
 
 async function getPerson(req: Request, res: Response) {
-    const { random, id } = req.query;
+    // #swagger.start
+    // #swagger.tags = ['Person']
+    // #swagger.description = 'Endpoint para obter um usuário.'
+    /* #swagger.parameters['random'] = {
+       in: 'query',
+           description: 'id do usuário desejado.',
+           type: 'number'
+    } */
+
+    /* #swagger.parameters['random'] = {
+       in: 'query',
+           description: 'Um filtro booleano que quando ativado retorna um usuário aleatório.',
+           type: 'boolean'
+    } */
+    // #swagger.end
+    let { random, id } = req.query;
 
     if (!random) {
         if (!id || !Number(id) || Number(id) < 1 || !Number.isInteger(Number(id))) {
@@ -13,16 +28,16 @@ async function getPerson(req: Request, res: Response) {
         }
     }
 
-    let person : Person;
+    let person: Person;
 
     if (random) {
         person = await PersonServices.getRandomPerson();
-    } 
+    }
 
     if (id) {
         person = await PersonServices.getPerson(Number(id));
     }
-    
+
 
     return res.status(httpStatus.OK).send(person);
 }
