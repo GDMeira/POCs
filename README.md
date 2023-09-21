@@ -1,4 +1,6 @@
-# POC TypeScript
+# POCs
+
+Here I test my new abilities. I've been using this project to test TypeScript, Prisma.
 
 ## link to deploy
 

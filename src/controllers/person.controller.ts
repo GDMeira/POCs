@@ -2,24 +2,9 @@ import { Request, Response } from "express";
 import PersonServices from "@/services/person.services";
 import { error } from "@/errors/error";
 import httpStatus from "http-status";
-import { Person } from "@/protocols/types";
+import { Person } from "@prisma/client";
 
 async function getPerson(req: Request, res: Response) {
-    // #swagger.start
-    // #swagger.tags = ['Person']
-    // #swagger.description = 'Endpoint para obter um usuário.'
-    /* #swagger.parameters['random'] = {
-       in: 'query',
-           description: 'id do usuário desejado.',
-           type: 'number'
-    } */
-
-    /* #swagger.parameters['random'] = {
-       in: 'query',
-           description: 'Um filtro booleano que quando ativado retorna um usuário aleatório.',
-           type: 'boolean'
-    } */
-    // #swagger.end
     let { random, id } = req.query;
 
     if (!random) {

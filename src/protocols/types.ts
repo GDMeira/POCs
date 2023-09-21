@@ -1,12 +1,5 @@
 import { HttpStatus } from "http-status";
-
-export type Person = {
-    id: number;
-    firstName: string;
-    lastName: string;
-    visits: number;
-    phone: string;
-}
+import { Person } from "@prisma/client";
 
 export type CreatePerson = Omit<Person, 'id'>
 

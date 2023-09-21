@@ -1,6 +1,7 @@
-import db from "@/database/database.connection";
-import { CreatePerson, Person } from "@/protocols/types";
-import { QueryResult } from "pg";
+import prisma from "@/database/database.connection";
+import { error } from "@/errors/error";
+import { CreatePerson } from "@/protocols/types";
+import { Person } from "@prisma/client";
 
 type AmountPeopleAtDB = {
     count: number;
@@ -8,51 +9,68 @@ type AmountPeopleAtDB = {
 }
 
 async function getAmountOfPeople(): Promise<AmountPeopleAtDB> {
-    const query = `SELECT MAX(id), COUNT(id) FROM people;`;
-    const result = await db.query<AmountPeopleAtDB>(query, []);
+    const result = await prisma.person.aggregate({
+        _max: {
+            id: true
+        },
+        _count: {
+            id: true
+        }
+    });
 
-    return result.rows[0];
+    const amountOfPeople: AmountPeopleAtDB = {count: result._count.id, max: result._max.id};
+
+    return amountOfPeople;
 }
 
 function createPerson(person: CreatePerson) {
-    const { firstName, lastName, phone } = person;
-
-    return db.query(`/* SQL */
-        INSERT INTO people ("firstName", "lastName", phone) VALUES ($1, $2, $3);
-    `, [firstName, lastName, phone]);
+    return prisma.person.create({
+        data: person
+    });
 }
 
-async function findPersonById(id: number): Promise<QueryResult<Person>> {
-    const query = `/* SQL */
-        UPDATE people 
-        SET visits = visits + 1
-        WHERE id=$1
-        RETURNING id, "firstName", "lastName", visits, phone
-    `;
-    const result = await db.query<Person>(query, [id]);
+async function findPersonById(id: number, forRandomPerson: boolean = false): Promise<Person> {
+    let result: Person; 
+
+    try {
+        result = await prisma.person.update({
+            data: {visits: {increment: 1}},
+            where: {id}
+        })
+    } catch (e) {
+        if (e?.code === 'P2025' && !forRandomPerson) throw error.notFound('Não foi possível encontrar uma pessoa com esse id.');
+
+        return null;
+    }
 
     return result;
 }
 
-async function updatePerson(id: number, phone: string): Promise<QueryResult<Person>> {
-    const query = `/* SQL */
-        UPDATE people 
-        SET phone = $2
-        WHERE id = $1
-        RETURNING id, "firstName", "lastName", visits, phone
-    `;
-    const result = await db.query<Person>(query, [id, phone]);
+async function updatePerson(id: number, phone: string): Promise<Person> {
+    let result: Person; 
+
+    try {
+        result = await prisma.person.update({
+            data: {phone},
+            where: {id}
+        });
+    } catch (e) {
+        if (e?.code === 'P2025') throw error.notFound('Não foi possível encontrar uma pessoa com esse id.')
+    }
 
     return result;
 }
 
-async function deletePerson(id: number): Promise<QueryResult> {
-    const query = `/* SQL */
-        DELETE FROM people 
-        WHERE id = $1
-        RETURNING id
-    `;
-    const result = await db.query(query, [id]);
+async function deletePerson(id: number): Promise<Person> {
+    let result: Person; 
+
+    try {
+        result = await prisma.person.delete({
+            where: {id}
+        });
+    } catch (e) {
+        if (e?.code === 'P2025') throw error.notFound('Não foi possível encontrar uma pessoa com esse id.')
+    }
 
     return result;
 }
