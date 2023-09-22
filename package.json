@@ -10,7 +10,7 @@
     "swagger-autogen": "node ./src/swagger/swagger.ts",
     "migrate:dev": "prisma migrate dev",
     "migrate:run": "prisma migrate deploy",
-    "first:deploy": "npx prisma init"
+    "first:deploy": "npx prisma init && npx prisma generate"
   },
   "dependencies": {
     "cors": "^2.8.5",
