@@ -41,119 +41,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var database_connection_1 = __importDefault(require("../database/database.connection"));
 var error_1 = require("../errors/error");
-function getAmountOfPeople() {
-    return __awaiter(this, void 0, void 0, function () {
-        var result, amountOfPeople;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, database_connection_1.default.person.aggregate({
-                        _max: {
-                            id: true
-                        },
-                        _count: {
-                            id: true
-                        }
-                    })];
-                case 1:
-                    result = _a.sent();
-                    amountOfPeople = { count: result._count.id, max: result._max.id };
-                    return [2 /*return*/, amountOfPeople];
-            }
-        });
-    });
-}
-function createPerson(person) {
-    return database_connection_1.default.person.create({
-        data: person
-    });
-}
-function findPersonById(id, forRandomPerson) {
-    if (forRandomPerson === void 0) { forRandomPerson = false; }
+function createReview(review) {
     return __awaiter(this, void 0, void 0, function () {
         var result, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, database_connection_1.default.person.update({
-                            data: { visits: { increment: 1 } },
-                            where: { id: id }
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, database_connection_1.default.review.create({
+                            data: review
                         })];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, database_connection_1.default.person.findUnique({
-                            where: { id: id },
-                            include: {
-                                review: {
-                                    where: { personId: id }
-                                }
-                            }
-                        })];
-                case 2:
                     result = _a.sent();
-                    return [3 /*break*/, 4];
-                case 3:
+                    return [3 /*break*/, 3];
+                case 2:
                     e_1 = _a.sent();
-                    if ((e_1 === null || e_1 === void 0 ? void 0 : e_1.code) === 'P2025' && !forRandomPerson)
+                    if ((e_1 === null || e_1 === void 0 ? void 0 : e_1.code) === 'P2003')
                         throw error_1.error.notFound('Não foi possível encontrar uma pessoa com esse id.');
                     return [2 /*return*/, null];
-                case 4: return [2 /*return*/, result];
+                case 3: return [2 /*return*/, result];
             }
         });
     });
 }
-function updatePerson(id, phone) {
+function readReviews(personId) {
     return __awaiter(this, void 0, void 0, function () {
         var result, e_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, database_connection_1.default.person.update({
-                            data: { phone: phone },
-                            where: { id: id }
+                    return [4 /*yield*/, database_connection_1.default.review.findMany({
+                            where: { personId: personId },
+                            select: {
+                                id: true,
+                                comment: true,
+                                grade: true
+                            }
                         })];
                 case 1:
                     result = _a.sent();
                     return [3 /*break*/, 3];
                 case 2:
                     e_2 = _a.sent();
-                    if ((e_2 === null || e_2 === void 0 ? void 0 : e_2.code) === 'P2025')
+                    if ((e_2 === null || e_2 === void 0 ? void 0 : e_2.code) === 'P2003')
                         throw error_1.error.notFound('Não foi possível encontrar uma pessoa com esse id.');
-                    return [3 /*break*/, 3];
+                    return [2 /*return*/, null];
                 case 3: return [2 /*return*/, result];
             }
         });
     });
 }
-function deletePerson(id) {
-    return __awaiter(this, void 0, void 0, function () {
-        var result, e_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, database_connection_1.default.person.delete({
-                            where: { id: id }
-                        })];
-                case 1:
-                    result = _a.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    e_3 = _a.sent();
-                    if ((e_3 === null || e_3 === void 0 ? void 0 : e_3.code) === 'P2025')
-                        throw error_1.error.notFound('Não foi possível encontrar uma pessoa com esse id.');
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/, result];
-            }
-        });
-    });
-}
-var PersonRepository = {
-    getAmountOfPeople: getAmountOfPeople,
-    createPerson: createPerson,
-    findPersonById: findPersonById,
-    updatePerson: updatePerson,
-    deletePerson: deletePerson,
+var reviewRepository = {
+    createReview: createReview,
+    readReviews: readReviews,
 };
-exports.default = PersonRepository;
+exports.default = reviewRepository;

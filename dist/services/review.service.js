@@ -39,40 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var error_1 = require("../errors/error");
-var person_repository_1 = __importDefault(require("../repositories/person.repository"));
-function getRandomPerson() {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, amountOfPeople, maxId, id, randomPerson;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, person_repository_1.default.getAmountOfPeople()];
-                case 1:
-                    _a = _b.sent(), amountOfPeople = _a.count, maxId = _a.max;
-                    if (!amountOfPeople || amountOfPeople === 0)
-                        throw error_1.error.badRequest("Ainda não temos pessoas cadastradas.");
-                    id = Math.floor(Math.random() * (maxId - 1 + 1) + 1);
-                    return [4 /*yield*/, person_repository_1.default.findPersonById(id, true)];
-                case 2:
-                    randomPerson = _b.sent();
-                    _b.label = 3;
-                case 3:
-                    if (!(!randomPerson && amountOfPeople > 0)) return [3 /*break*/, 5];
-                    id = Math.floor(Math.random() * (maxId - 1 + 1) + 1);
-                    return [4 /*yield*/, person_repository_1.default.findPersonById(id, true)];
-                case 4:
-                    randomPerson = _b.sent();
-                    return [3 /*break*/, 3];
-                case 5: return [2 /*return*/, randomPerson];
-            }
-        });
-    });
-}
-function postPerson(person) {
+var review_repository_1 = __importDefault(require("../repositories/review.repository"));
+function createReview(review) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, person_repository_1.default.createPerson(person)];
+                case 0: return [4 /*yield*/, review_repository_1.default.createReview(review)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -80,52 +52,21 @@ function postPerson(person) {
         });
     });
 }
-function getPerson(id) {
+function readReviews(personId) {
     return __awaiter(this, void 0, void 0, function () {
-        var person;
+        var reviews;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, person_repository_1.default.findPersonById(id)];
+                case 0: return [4 /*yield*/, review_repository_1.default.readReviews(personId)];
                 case 1:
-                    person = _a.sent();
-                    if (!person)
-                        throw error_1.error.notFound('Não foi possível encontrar uma pessoa com esse id.');
-                    return [2 /*return*/, person];
+                    reviews = _a.sent();
+                    return [2 /*return*/, reviews];
             }
         });
     });
 }
-function updatePerson(id, phone) {
-    return __awaiter(this, void 0, void 0, function () {
-        var person;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, person_repository_1.default.updatePerson(id, phone)];
-                case 1:
-                    person = _a.sent();
-                    return [2 /*return*/, person];
-            }
-        });
-    });
-}
-function deletePerson(id) {
-    return __awaiter(this, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, person_repository_1.default.deletePerson(id)];
-                case 1:
-                    result = _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-var PersonServices = {
-    getRandomPerson: getRandomPerson,
-    postPerson: postPerson,
-    getPerson: getPerson,
-    updatePerson: updatePerson,
-    deletePerson: deletePerson,
+var reviewService = {
+    createReview: createReview,
+    readReviews: readReviews,
 };
-exports.default = PersonServices;
+exports.default = reviewService;
