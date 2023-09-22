@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "start": "node ./dist/index.js",
-    "build": "npx tsc && npx tsc-alias && npm run migrate:run",
+    "build": "npx tsc && npx tsc-alias && npm run first:deploy && npm run migrate:run",
     "swagger-autogen": "node ./src/swagger/swagger.ts",
     "migrate:dev": "prisma migrate dev",
-    "migrate:run": "prisma migrate deploy"
+    "migrate:run": "prisma migrate deploy",
+    "first:deploy": "npx prisma init"
   },
   "dependencies": {
     "cors": "^2.8.5",
