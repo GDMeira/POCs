@@ -1,5 +1,4 @@
 import prisma from "@/database/database.connection";
-import { CreatePerson } from "@/protocols/types";
 
 async function main() {
   return prisma.person.upsert({
