@@ -13,6 +13,17 @@ model Person {
   lastName  String  @db.VarChar(50)
   visits    Int?    @default(0)
   phone     String? @db.VarChar(11)
+  review Review[]
 
   @@map("people")
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  grade Int
+  comment String? @db.VarChar(200)
+  person Person @relation(fields: [personId], references: [id])
+  personId Int 
+
+  @@map("reviews")
 }

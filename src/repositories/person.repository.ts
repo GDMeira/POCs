@@ -33,9 +33,18 @@ async function findPersonById(id: number, forRandomPerson: boolean = false): Pro
     let result: Person; 
 
     try {
-        result = await prisma.person.update({
+        await prisma.person.update({
             data: {visits: {increment: 1}},
             where: {id}
+        })
+
+        result = await prisma.person.findUnique({
+            where: {id},
+            include: {
+                review: {
+                    where: {personId: id}
+                }
+            }
         })
     } catch (e) {
         if (e?.code === 'P2025' && !forRandomPerson) throw error.notFound('Não foi possível encontrar uma pessoa com esse id.');
