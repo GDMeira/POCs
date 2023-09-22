@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "start": "node ./dist/index.js",
-    "build": "npm run migrate:run && npx tsc && npx tsc-alias",
+    "build": "npx prisma generate && npm run migrate:run && npx tsc && npx tsc-alias",
     "swagger-autogen": "node ./src/swagger/swagger.ts",
     "migrate:dev": "prisma migrate dev",
     "migrate:run": "prisma migrate deploy",
