@@ -1,4 +1,4 @@
-import prisma from "@/database/database.connection";
+import prisma from "../src/database/database.connection";
 
 async function main() {
   return prisma.person.upsert({
